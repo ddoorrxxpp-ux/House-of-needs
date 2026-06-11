@@ -1,0 +1,6 @@
+{
+  "name": "Bayt Al-Hajat Store",
+  "description": "An premium, ultra-smooth responsive tri-lingual e-commerce website for Household, Electrical, and Professional Accessories in Iraq.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "An item for sale in Bayt Al-Hajat",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique product draft ID"
+        },
+        "name_ar": {
+          "type": "string",
+          "description": "Arabic product name"
+        },
+        "name_ku": {
+          "type": "string",
+          "description": "Kurdish product name"
+        },
+        "name_en": {
+          "type": "string",
+          "description": "English product name"
+        },
+        "description_ar": {
+          "type": "string",
+          "description": "Product Arabic description"
+        },
+        "description_ku": {
+          "type": "string",
+          "description": "Product Kurdish description"
+        },
+        "description_en": {
+          "type": "string",
+          "description": "Product English description"
+        },
+        "price": {
+          "type": "number",
+          "description": "Product price in IQD"
+        },
+        "category": {
+          "type": "string",
+          "description": "Sub-category directory of the catalog"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Standard direct resource image URL"
+        },
+        "inStock": {
+          "type": "boolean",
+          "description": "Whether the item is currently in-stock"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Out-of-five high-quality consumer review rating"
+        }
+      },
+      "required": [
+        "id",
+        "name_ar",
+        "name_ku",
+        "name_en",
+        "price",
+        "category",
+        "imageUrl",
+        "inStock"
+      ]
+    },
+    "LayoutConfig": {
+      "title": "LayoutConfig",
+      "description": "Branding configuration for the storefront",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Config record ID"
+        },
+        "storeLogo": {
+          "type": "string",
+          "description": "Store branding logo SVG/Image reference"
+        },
+        "bannerText_ar": {
+          "type": "string",
+          "description": "Banner message in Arabic"
+        },
+        "bannerText_ku": {
+          "type": "string",
+          "description": "Banner message in Kurdish"
+        },
+        "bannerText_en": {
+          "type": "string",
+          "description": "Banner message in English"
+        }
+      },
+      "required": [
+        "id",
+        "storeLogo",
+        "bannerText_ar",
+        "bannerText_ku",
+        "bannerText_en"
+      ]
+    },
+    "MainConfig": {
+      "title": "MainConfig",
+      "description": "Global config variables containing live URL of store logo",
+      "type": "object",
+      "properties": {
+        "logoUrl": {
+          "type": "string",
+          "description": "Live custom web link or direct URL of the store logo"
+        }
+      },
+      "required": [
+        "logoUrl"
+      ]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Catalog dataset representing all products sold by Bayt Al-Hajat"
+    },
+    "/layout/{configId}": {
+      "schema": "LayoutConfig",
+      "description": "Single-entry configuration variables mapping logo and store banners"
+    },
+    "/site_settings/{configId}": {
+      "schema": "MainConfig",
+      "description": "Global main configuration variables housing main shop assets like logoUrl"
+    }
+  }
+}

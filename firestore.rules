@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Static Type and Range Validation for Product entity
+    function isValidProduct(data) {
+      return data.keys().hasAll(['id', 'name_ar', 'name_ku', 'name_en', 'price', 'category', 'imageUrl', 'inStock'])
+        && data.id is string && data.id.size() <= 128
+        && data.name_ar is string && data.name_ar.size() <= 200
+        && data.name_ku is string && data.name_ku.size() <= 200
+        && data.name_en is string && data.name_en.size() <= 200
+        && (data.description_ar == null || (data.description_ar is string && data.description_ar.size() <= 2000))
+        && (data.description_ku == null || (data.description_ku is string && data.description_ku.size() <= 2000))
+        && (data.description_en == null || (data.description_en is string && data.description_en.size() <= 2000))
+        && data.price is number && data.price >= 0 && data.price <= 10000000
+        && data.category is string && data.category.size() <= 100
+        && data.imageUrl is string && data.imageUrl.size() <= 2048
+        && data.inStock is bool
+        && (data.rating == null || (data.rating is number && data.rating >= 0 && data.rating <= 5));
+    }
+
+    // Static Type and Size Validation for LayoutConfig entity
+    function isValidLayout(data) {
+      return data.keys().hasAll(['id', 'storeLogo', 'bannerText_ar', 'bannerText_ku', 'bannerText_en'])
+        && data.id is string && data.id.size() <= 128
+        && data.storeLogo is string && data.storeLogo.size() <= 8000
+        && data.bannerText_ar is string && data.bannerText_ar.size() <= 1000
+        && data.bannerText_ku is string && data.bannerText_ku.size() <= 1000
+        && data.bannerText_en is string && data.bannerText_en.size() <= 1000;
+    }
+
+    // Static Type and Size Validation for MainConfig entity
+    function isValidMainConfig(data) {
+      return data.keys().hasAll(['logoUrl'])
+        && data.logoUrl is string && data.logoUrl.size() <= 2048;
+    }
+
+    // Validate ID pattern
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Products Rules - Public Read, Auth or validated writes for populating data
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isValidId(productId) && isValidProduct(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Layout Rules - Public Read, Auth or validated writes for populating dynamic layout variables
+    match /layout/{configId} {
+      allow read: if true;
+      allow create, update: if isValidId(configId) && isValidLayout(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Main Config Rules - Public Read, validated writes
+    match /site_settings/{configId} {
+      allow read: if true;
+      allow create, update: if isValidId(configId) && isValidMainConfig(request.resource.data);
+      allow delete: if false;
+    }
+  }
+}
